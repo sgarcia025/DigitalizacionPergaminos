@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "standalone",
+  outputFileTracingRoot: "/app/frontend",
+  experimental: {
+    turbo: {
+      root: "/app/frontend",
+    },
+  },
 };
 
 export default nextConfig;
