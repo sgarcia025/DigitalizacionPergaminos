@@ -127,7 +127,7 @@ export default function UploadPage() {
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2">¡Expediente Cargado!</h2>
             <p className="text-muted-foreground mb-6">
-              El expediente "{expedienteName}" ha sido cargado exitosamente y está siendo procesado.
+              El expediente &quot;{expedienteName}&quot; ha sido cargado exitosamente y está siendo procesado.
             </p>
             <div className="flex gap-4 justify-center">
               <Button onClick={resetForm} variant="outline">
