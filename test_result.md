@@ -101,3 +101,99 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Comprehensive Frontend Testing for Pergaminos IDP Platform - Test all key functionality of the Next.js application including navigation, dashboard, upload, files management, theme switching, and responsive behavior."
+
+frontend:
+  - task: "Navigation & Layout Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/layout/sidebar.tsx, /app/frontend/src/components/layout/topbar.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial assessment - need to test sidebar navigation links, active states, topbar functionality including search, tenant selector, theme toggle, notifications, and user menu"
+
+  - task: "Dashboard Page Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/app/(dashboard)/dashboard/page.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial assessment - need to test KPI cards display, Cargar Expediente button, recent files list with status badges, Ver Detalle buttons, and Ver Todos los Expedientes button"
+
+  - task: "Upload Page Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/app/(dashboard)/upload/page.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial assessment - need to test drag & drop functionality, file input, form validation, expedient name field, file type/size validation, upload process simulation, and success state buttons"
+
+  - task: "Files Page Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/app/(dashboard)/files/page.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial assessment - need to test files list display, search functionality, status badges, Ver/Descargar buttons, and Cargar Nuevo button"
+
+  - task: "Theme & UI Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/layout/topbar.tsx, /app/frontend/src/app/providers.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial assessment - need to test light/dark theme switching, shadcn/ui components rendering, color contrast, hover states, loading states"
+
+  - task: "Mobile Responsiveness Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/app/(dashboard)/layout.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial assessment - need to test application at different screen sizes, navigation on mobile, form/button sizing"
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+
+test_plan:
+  current_focus:
+    - "Navigation & Layout Testing"
+    - "Dashboard Page Testing"
+    - "Upload Page Testing"
+    - "Files Page Testing"
+    - "Theme & UI Testing"
+    - "Mobile Responsiveness Testing"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+    - message: "Starting comprehensive frontend testing for Pergaminos IDP Platform. Will test all key functionality including navigation, dashboard, upload, files management, theme switching, and responsive behavior. Application is running on frontend service."
