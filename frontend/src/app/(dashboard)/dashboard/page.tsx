@@ -13,7 +13,10 @@ import {
   Download,
   BarChart3,
   Activity,
-  Building2
+  Building2,
+  Zap,
+  Target,
+  Users
 } from "lucide-react";
 import Link from "next/link";
 
@@ -63,273 +66,303 @@ const mockRecentFiles = [
   }
 ];
 
-const statusIcons = {
-  Ready: <CheckCircle className="h-5 w-5 text-emerald-500" />,
-  Processing: <Clock className="h-5 w-5 text-blue-500" />,
-  QA: <AlertTriangle className="h-5 w-5 text-amber-500" />,
-  Error: <AlertTriangle className="h-5 w-5 text-red-500" />,
-  Uploaded: <Upload className="h-5 w-5 text-gray-500" />
-};
-
-const statusColors = {
-  Ready: "text-emerald-700 bg-emerald-100 border-emerald-300 dark:text-emerald-300 dark:bg-emerald-900/30 dark:border-emerald-700",
-  Processing: "text-blue-700 bg-blue-100 border-blue-300 dark:text-blue-300 dark:bg-blue-900/30 dark:border-blue-700", 
-  QA: "text-amber-700 bg-amber-100 border-amber-300 dark:text-amber-300 dark:bg-amber-900/30 dark:border-amber-700",
-  Error: "text-red-700 bg-red-100 border-red-300 dark:text-red-300 dark:bg-red-900/30 dark:border-red-700",
-  Uploaded: "text-gray-700 bg-gray-100 border-gray-300 dark:text-gray-300 dark:bg-gray-900/30 dark:border-gray-700"
+const statusConfig = {
+  Ready: { 
+    icon: <CheckCircle className="h-5 w-5" />, 
+    color: "text-green-700 bg-green-100 border border-green-300",
+    dotColor: "bg-green-500"
+  },
+  Processing: { 
+    icon: <Clock className="h-5 w-5" />, 
+    color: "text-blue-700 bg-blue-100 border border-blue-300",
+    dotColor: "bg-blue-500"
+  },
+  QA: { 
+    icon: <AlertTriangle className="h-5 w-5" />, 
+    color: "text-yellow-700 bg-yellow-100 border border-yellow-300",
+    dotColor: "bg-yellow-500"
+  },
+  Error: { 
+    icon: <AlertTriangle className="h-5 w-5" />, 
+    color: "text-red-700 bg-red-100 border border-red-300",
+    dotColor: "bg-red-500"
+  }
 };
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8">
-      {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20 p-8 rounded-2xl border border-blue-200/50 dark:border-blue-800/50 shadow-lg">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
-              📊 Dashboard
-            </h1>
-            <p className="text-slate-600 dark:text-slate-300 text-lg">
-              Resumen de actividad y métricas de procesamiento inteligente
-            </p>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="space-y-8 p-6">
+        {/* Beautiful Header */}
+        <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-gray-800 shadow-2xl border-2 border-blue-100 dark:border-blue-900">
+          <div className="absolute inset-0 bg-blue-500 opacity-5"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-purple-400 rounded-full opacity-10 -translate-y-1/2 translate-x-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-cyan-400 rounded-full opacity-10 translate-y-1/2 -translate-x-1/2"></div>
+          
+          <div className="relative p-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">
+                  📊 Dashboard
+                </h1>
+                <p className="text-xl text-gray-600 dark:text-gray-300">
+                  Resumen de actividad y métricas de procesamiento inteligente
+                </p>
+              </div>
+              <Link href="/upload">
+                <Button 
+                  size="lg" 
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 text-lg font-bold"
+                >
+                  <Upload className="mr-3 h-6 w-6" />
+                  🚀 Cargar Expediente
+                </Button>
+              </Link>
+            </div>
           </div>
-          <Link href="/upload">
-            <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-              <Upload className="mr-2 h-5 w-5" />
-              🚀 Cargar Expediente
-            </Button>
-          </Link>
         </div>
-      </div>
 
-      {/* Enhanced KPI Cards Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {/* Procesados Hoy */}
-        <Card className="bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-950/40 dark:to-teal-950/40 border-emerald-200 dark:border-emerald-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-bold text-emerald-800 dark:text-emerald-200">
-              📈 Procesados Hoy
-            </CardTitle>
-            <div className="p-2 bg-emerald-500/20 rounded-full">
-              <FileText className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100 mb-1">
-              {mockStats.processedToday}
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <TrendingUp className="h-4 w-4 text-emerald-500" />
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium">+12% desde ayer</span>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Beautiful KPI Cards */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {/* Procesados Hoy */}
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border-2 border-green-200 dark:border-green-800 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-green-400 rounded-full opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-bold text-green-800 dark:text-green-200">
+                  📈 PROCESADOS HOY
+                </CardTitle>
+                <div className="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+                  <FileText className="h-8 w-8 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-black text-green-900 dark:text-green-100 mb-2">
+                {mockStats.processedToday}
+              </div>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-green-500" />
+                <span className="text-green-600 dark:text-green-400 font-bold">+12% desde ayer</span>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* En Cola */}
-        <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/40 dark:to-indigo-950/40 border-blue-200 dark:border-blue-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-bold text-blue-800 dark:text-blue-200">
-              ⏳ En Cola
-            </CardTitle>
-            <div className="p-2 bg-blue-500/20 rounded-full">
-              <Clock className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-blue-900 dark:text-blue-100 mb-1">
-              {mockStats.inQueue}
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Activity className="h-4 w-4 text-blue-500 animate-pulse" />
-              <span className="text-blue-600 dark:text-blue-400 font-medium">Procesando...</span>
-            </div>
-          </CardContent>
-        </Card>
+          {/* En Cola */}
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-800 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-400 rounded-full opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-bold text-blue-800 dark:text-blue-200">
+                  ⏳ EN COLA
+                </CardTitle>
+                <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <Clock className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-black text-blue-900 dark:text-blue-100 mb-2">
+                {mockStats.inQueue}
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <span className="text-blue-600 dark:text-blue-400 font-bold">Procesando...</span>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Con Issues */}
-        <Card className="bg-gradient-to-br from-amber-50 to-orange-100 dark:from-amber-950/40 dark:to-orange-950/40 border-amber-200 dark:border-amber-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-bold text-amber-800 dark:text-amber-200">
-              ⚠️ Con Issues
-            </CardTitle>
-            <div className="p-2 bg-amber-500/20 rounded-full">
-              <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-amber-900 dark:text-amber-100 mb-1">
-              {mockStats.withIssues}
-            </div>
-            <div className="text-sm">
-              <span className="text-amber-600 dark:text-amber-400 font-medium">Requieren atención</span>
-            </div>
-          </CardContent>
-        </Card>
+          {/* Con Issues */}
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border-2 border-yellow-200 dark:border-yellow-800 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-400 rounded-full opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-bold text-yellow-800 dark:text-yellow-200">
+                  ⚠️ CON ISSUES
+                </CardTitle>
+                <div className="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">
+                  <AlertTriangle className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-black text-yellow-900 dark:text-yellow-100 mb-2">
+                {mockStats.withIssues}
+              </div>
+              <span className="text-yellow-600 dark:text-yellow-400 font-bold">Requieren atención</span>
+            </CardContent>
+          </Card>
 
-        {/* Throughput */}
-        <Card className="bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-950/40 dark:to-pink-950/40 border-purple-200 dark:border-purple-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-bold text-purple-800 dark:text-purple-200">
-              🚀 Throughput
-            </CardTitle>
-            <div className="p-2 bg-purple-500/20 rounded-full">
-              <BarChart3 className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-900 dark:text-purple-100 mb-1">
-              {mockStats.throughput}
-            </div>
-            <div className="text-sm">
-              <span className="text-purple-600 dark:text-purple-400 font-medium">⏱️ {mockStats.avgProcessingTime}</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          {/* Throughput */}
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border-2 border-purple-200 dark:border-purple-800 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 rounded-2xl">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-purple-400 rounded-full opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-bold text-purple-800 dark:text-purple-200">
+                  🚀 THROUGHPUT
+                </CardTitle>
+                <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-full">
+                  <BarChart3 className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-black text-purple-900 dark:text-purple-100 mb-2">
+                {mockStats.throughput}
+              </div>
+              <span className="text-purple-600 dark:text-purple-400 font-bold">⏱️ {mockStats.avgProcessingTime}</span>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Additional Metrics Row */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900/50 dark:to-gray-900/50 border-slate-200 dark:border-slate-700 shadow-lg">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              ✅ Tasa de Éxito
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold text-emerald-600 mb-3">
-              {mockStats.successRate}%
-            </div>
-            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
-              <div 
-                className="bg-gradient-to-r from-emerald-500 to-teal-500 h-3 rounded-full transition-all duration-1000" 
-                style={{ width: `${mockStats.successRate}%` }}
-              ></div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900/50 dark:to-gray-900/50 border-slate-200 dark:border-slate-700 shadow-lg">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              📊 Total Procesados
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold text-blue-600 mb-2">
-              {mockStats.totalProcessed.toLocaleString()}
-            </div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Documentos este mes
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900/50 dark:to-gray-900/50 border-slate-200 dark:border-slate-700 shadow-lg">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              ⏰ Tiempo Promedio
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold text-purple-600 mb-2">
-              {mockStats.avgProcessingTime}
-            </div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Por documento
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Enhanced Recent Files */}
-      <Card className="bg-gradient-to-b from-white to-slate-50/80 dark:from-slate-900 dark:to-slate-800/80 border-slate-200 dark:border-slate-700 shadow-xl">
-        <CardHeader className="border-b border-slate-200/80 dark:border-slate-700/80 bg-gradient-to-r from-slate-50/80 to-blue-50/50 dark:from-slate-800/80 dark:to-slate-700/80">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-3">
-                📁 Últimos Expedientes
+        {/* Stats Row */}
+        <div className="grid gap-6 md:grid-cols-3">
+          <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <Target className="h-6 w-6 text-green-500" />
+                ✅ Tasa de Éxito
               </CardTitle>
-              <CardDescription className="text-slate-600 dark:text-slate-300 mt-1">
-                Expedientes procesados recientemente con su estado actual
-              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-5xl font-black text-green-600 mb-4">
+                {mockStats.successRate}%
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                <div 
+                  className="bg-green-500 h-4 rounded-full transition-all duration-1000" 
+                  style={{ width: `${mockStats.successRate}%` }}
+                ></div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <Users className="h-6 w-6 text-blue-500" />
+                📊 Total Procesados
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-5xl font-black text-blue-600 mb-2">
+                {mockStats.totalProcessed.toLocaleString()}
+              </div>
+              <p className="text-gray-600 dark:text-gray-400 font-medium">
+                Documentos este mes
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <Zap className="h-6 w-6 text-purple-500" />
+                ⏰ Tiempo Promedio
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-5xl font-black text-purple-600 mb-2">
+                {mockStats.avgProcessingTime}
+              </div>
+              <p className="text-gray-600 dark:text-gray-400 font-medium">
+                Por documento
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Beautiful Recent Files */}
+        <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 shadow-2xl rounded-3xl">
+          <CardHeader className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-t-3xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-3">
+                  📁 Últimos Expedientes
+                </CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-300 mt-2 text-lg">
+                  Expedientes procesados recientemente con su estado actual
+                </CardDescription>
+              </div>
+              <div className="p-4 bg-blue-100 dark:bg-blue-900 rounded-2xl">
+                <FileText className="h-10 w-10 text-blue-600 dark:text-blue-400" />
+              </div>
             </div>
-            <div className="p-3 bg-blue-500/10 rounded-xl">
-              <FileText className="h-8 w-8 text-blue-600" />
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            {mockRecentFiles.map((file) => (
-              <div
-                key={file.id}
-                className="flex items-center justify-between p-6 border border-slate-200/60 dark:border-slate-700/60 rounded-xl bg-gradient-to-r from-white to-slate-50/50 dark:from-slate-800/50 dark:to-slate-700/50 hover:shadow-lg hover:border-blue-300/60 transition-all duration-300 group"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl group-hover:scale-110 transition-transform">
-                    <FileText className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100 text-lg group-hover:text-blue-600 transition-colors">
-                      {file.name}
-                    </h4>
-                    <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 mt-1">
-                      <div className="flex items-center gap-1">
-                        <Building2 className="h-4 w-4" />
-                        <span className="font-medium">{file.company}</span>
+          </CardHeader>
+          <CardContent className="p-8">
+            <div className="space-y-6">
+              {mockRecentFiles.map((file) => (
+                <div
+                  key={file.id}
+                  className="flex items-center justify-between p-6 border-2 border-gray-100 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-800 hover:border-blue-300 hover:shadow-lg transition-all duration-300 group"
+                >
+                  <div className="flex items-center space-x-6">
+                    <div className="p-4 bg-blue-100 dark:bg-blue-900 rounded-2xl group-hover:scale-110 transition-transform">
+                      <FileText className="h-10 w-10 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-xl text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">
+                        {file.name}
+                      </h4>
+                      <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 mt-2">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="h-5 w-5" />
+                          <span className="font-semibold">{file.company}</span>
+                        </div>
+                        <span>•</span>
+                        <span className="font-medium">{file.pages} páginas</span>
+                        <span>•</span>
+                        <span>{new Date(file.uploadedAt).toLocaleDateString('es-ES')}</span>
                       </div>
-                      <span className="text-slate-400">•</span>
-                      <span>{file.pages} páginas</span>
-                      <span className="text-slate-400">•</span>
-                      <span>{new Date(file.uploadedAt).toLocaleDateString('es-ES')}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <span
+                      className={`inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm shadow-lg ${
+                        statusConfig[file.status as keyof typeof statusConfig]?.color
+                      }`}
+                    >
+                      <div className={`w-3 h-3 rounded-full ${statusConfig[file.status as keyof typeof statusConfig]?.dotColor}`}></div>
+                      {statusConfig[file.status as keyof typeof statusConfig]?.icon}
+                      {file.status}
+                    </span>
+                    
+                    <div className="flex gap-3">
+                      <Link href={`/files/${file.id}`}>
+                        <Button variant="outline" size="lg" className="rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 font-bold">
+                          <Eye className="h-5 w-5 mr-2" />
+                          Ver Detalle
+                        </Button>
+                      </Link>
+                      
+                      {file.status === 'Ready' && (
+                        <Button variant="outline" size="lg" className="rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 font-bold text-green-700 border-green-300 hover:bg-green-50">
+                          <Download className="h-5 w-5 mr-2" />
+                          Descargar
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
-                
-                <div className="flex items-center space-x-3">
-                  <span
-                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border-2 shadow-sm ${
-                      statusColors[file.status as keyof typeof statusColors]
-                    }`}
-                  >
-                    {statusIcons[file.status as keyof typeof statusIcons]}
-                    {file.status}
-                  </span>
-                  
-                  <div className="flex gap-2">
-                    <Link href={`/files/${file.id}`}>
-                      <Button variant="outline" size="sm" className="shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105">
-                        <Eye className="h-4 w-4 mr-1" />
-                        Ver Detalle
-                      </Button>
-                    </Link>
-                    
-                    {file.status === 'Ready' && (
-                      <Button variant="outline" size="sm" className="shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105">
-                        <Download className="h-4 w-4 mr-1" />
-                        Descargar
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="mt-8 pt-6 border-t border-slate-200/60 dark:border-slate-700/60">
-            <Link href="/files">
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="w-full bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 font-semibold hover:bg-gradient-to-r hover:from-blue-100 hover:to-purple-100 hover:shadow-lg hover:scale-105 transition-all duration-300"
-              >
-                <FileText className="mr-2 h-5 w-5" />
-                📋 Ver Todos los Expedientes
-              </Button>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+            
+            <div className="mt-10 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
+              <Link href="/files">
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="w-full py-6 rounded-2xl text-lg font-bold border-2 border-blue-300 text-blue-700 hover:bg-blue-50 hover:shadow-lg hover:scale-105 transition-all duration-300"
+                >
+                  <FileText className="mr-3 h-6 w-6" />
+                  📋 Ver Todos los Expedientes
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
